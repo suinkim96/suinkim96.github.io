@@ -23,11 +23,11 @@ I am particularly interested in developing new statistical methodologies and mac
 
 ## 📄 Selected Publications
 - *Enhancing quantile estimation via quantile combination under heteroscedasticity* (to appear).  
-  **Statistical Papers**, 2025.  
+  *Statistical Papers*, 2025.  
 - *Variable-selection consistency of linear quantile regression by validation set approach*.  
-  **Statistics & Probability Letters**, 2025.  
+  *Statistics & Probability Letters*, 2025.  
 - *Local quantile ensemble for machine learning methods*.  
-  **Communications for Statistical Applications and Methods**, 2024.  
+  *Communications for Statistical Applications and Methods*, 2024.  
 - Full publication list available on [Google Scholar](https://scholar.google.co.kr/citations?user=eQPLBW4AAAAJ&hl=ko).  
 
 ---
