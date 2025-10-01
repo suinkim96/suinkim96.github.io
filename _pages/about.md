@@ -13,10 +13,10 @@ I am particularly interested in developing new statistical methodologies and mac
 
 
 ## 🎓 Education
-- **Ph.D. in Statistics (expected Feb 2026)**, Korea University  
+- Ph.D. in Statistics (expected Feb 2026), Korea University  
   GPA: 4.44 / 4.5  
   Advisor: Prof. Yoonsuh Jung  
-- **B.A. in Statistics (2021)**, Sungkyunkwan University  
+- B.A. in Statistics (2021), Sungkyunkwan University  
   GPA: 4.31 / 4.5  
 
 ---
