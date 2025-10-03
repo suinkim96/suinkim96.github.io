@@ -2,7 +2,7 @@
 title: "Variable-selection consistency of linear quantile regression by validation set approach"
 collection: publications
 category: manuscripts
-permalink: /publication/2009-10-01-paper-title-number-1
+permalink: /publication/2025-04-15-Letters-consistency-1.md
 date: 2025-04-15
 venue: 'Statistics & Probability Letters'
 slidesurl: 'http://academicpages.github.io/files/'
