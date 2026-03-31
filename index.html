@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suin Kim — Postdoctoral Researcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Outfit:wght@200;300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #07090f;
+      --surface: #0d1117;
+      --border:  rgba(255,255,255,0.07);
+      --accent:  #5eead4;
+      --accent2: #818cf8;
+      --accent3: #f472b6;
+      --text:    #e2e8f0;
+      --muted:   #64748b;
+      --card:    rgba(15,23,42,0.7);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+
+    /* Cursor */
+    .cursor-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+    .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(94,234,212,0.4); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width .3s, height .3s, border-color .3s; }
+    .cursor-ring.hovering { width: 48px; height: 48px; border-color: var(--accent); }
+
+    #canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.35; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.4; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 3rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color .4s, backdrop-filter .4s, background .4s;
+    }
+    nav.scrolled { border-color: var(--border); backdrop-filter: blur(20px); background: rgba(7,9,15,0.7); }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 300; letter-spacing: .08em; color: var(--text); text-decoration: none; cursor: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links li a {
+      font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .12em;
+      color: var(--muted); text-decoration: none; text-transform: uppercase;
+      transition: color .25s; position: relative;
+      padding: .4rem 1.2rem; cursor: none;
+    }
+    .nav-links li a::after { content: ''; position: absolute; bottom: -4px; left: 1.2rem; right: 1.2rem; height: 1px; background: var(--accent); transform: scaleX(0); transition: transform .3s; }
+    .nav-links li a:hover,
+    .nav-links li a.active { color: var(--accent); }
+    .nav-links li a.active::after { transform: scaleX(1); }
+
+    /* PAGE SYSTEM */
+    .page { display: none; position: relative; z-index: 2; }
+    .page.active { display: block; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+      padding: 0 max(3rem, 8vw);
+    }
+    .hero-tag { font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; gap: .8rem; opacity: 0; animation: fadeUp .8s .2s forwards; }
+    .hero-tag::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); }
+    h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 300; line-height: 1.0; letter-spacing: -.01em; opacity: 0; animation: fadeUp .9s .4s forwards; }
+    h1 em { font-style: italic; color: var(--accent); }
+    .hero-sub { margin-top: 2rem; font-size: 1rem; color: var(--muted); max-width: 500px; line-height: 1.8; opacity: 0; animation: fadeUp .9s .6s forwards; }
+    .hero-sub strong { color: var(--text); font-weight: 400; }
+    .hero-cta { margin-top: 2.8rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; opacity: 0; animation: fadeUp .9s .8s forwards; }
+    .btn-primary { padding: .75rem 1.8rem; background: var(--accent); color: var(--bg); font-family: 'DM Mono', monospace; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; font-weight: 400; transition: transform .2s, box-shadow .2s; cursor: none; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(94,234,212,.25); }
+    .btn-ghost { padding: .75rem 1.8rem; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; transition: border-color .25s, color .25s; cursor: none; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .formula-strip { margin-top: 5rem; border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; gap: 3rem; flex-wrap: wrap; opacity: 0; animation: fadeUp .9s 1s forwards; }
+    .formula-item { font-family: 'DM Mono', monospace; font-size: .75rem; color: var(--muted); letter-spacing: .08em; }
+    .formula-item span { color: var(--accent2); }
+
+    /* COMMON */
+    .section-inner { max-width: 1100px; margin: 0 auto; padding: 7rem 3rem; }
+    .section-label { font-family: 'DM Mono', monospace; font-size: .7rem; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: .8rem; }
+    .section-label::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); }
+    h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300; line-height: 1.15; margin-bottom: 3.5rem; }
+    .glowing-line { height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: .4; position: relative; z-index: 2; }
+
+    /* ABOUT */
+    #about-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); position: relative; z-index: 2; }
+    .about-text p { color: var(--muted); line-height: 1.85; margin-bottom: 1.2rem; font-size: .97rem; }
+    .about-text p strong { color: var(--text); font-weight: 400; }
+    .edu-list { margin-top: 2.2rem; }
+    .edu-item { border-left: 1px solid var(--border); padding: 0 0 1.8rem 1.5rem; position: relative; }
+    .edu-item::before { content: ''; position: absolute; left: -4px; top: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .edu-item:last-child { padding-bottom: 0; }
+    .edu-period { font-family: 'DM Mono', monospace; font-size: .65rem; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .3rem; }
+    .edu-degree { font-size: 1rem; font-weight: 400; color: var(--text); margin-bottom: .2rem; }
+    .edu-school { font-size: .87rem; color: var(--muted); }
+    .edu-detail { font-family: 'DM Mono', monospace; font-size: .67rem; color: var(--muted); margin-top: .3rem; }
+
+    /* RESEARCH */
+    #research-section { position: relative; z-index: 2; }
+    .research-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .research-card { background: var(--card); border: 1px solid var(--border); padding: 2rem; position: relative; overflow: hidden; transition: border-color .3s, transform .3s; cursor: none; }
+    .research-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(94,234,212,.04), transparent); opacity: 0; transition: opacity .3s; }
+    .research-card:hover { border-color: rgba(94,234,212,.3); transform: translateY(-4px); }
+    .research-card:hover::after { opacity: 1; }
+    .research-icon { font-family: 'DM Mono', monospace; font-size: 1rem; color: var(--accent2); margin-bottom: 1.2rem; }
+    .research-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; margin-bottom: .7rem; line-height: 1.25; }
+    .research-card p { font-size: .87rem; color: var(--muted); line-height: 1.7; }
+    .research-tags { margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+    .tag { font-family: 'DM Mono', monospace; font-size: .62rem; padding: .25rem .65rem; border: 1px solid var(--border); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .tag.accent { border-color: rgba(94,234,212,.3); color: var(--accent); }
+
+    /* PUBLICATIONS PAGE */
+    #page-publications { background: var(--surface); min-height: 100vh; }
+    .pub-subheader { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .2em; color: var(--accent2); text-transform: uppercase; padding: 1.8rem 0 .8rem; border-bottom: 1px solid var(--border); }
+    .pub-list { display: flex; flex-direction: column; }
+    .pub-item { border-bottom: 1px solid var(--border); padding: 1.8rem 0; display: grid; grid-template-columns: 5.5rem 1fr; gap: 1.5rem; align-items: start; cursor: none; position: relative; }
+    .pub-item::before { content: ''; position: absolute; left: -3rem; top: 0; bottom: 0; width: 3px; background: var(--accent); transform: scaleY(0); transition: transform .3s; }
+    .pub-item:hover::before { transform: scaleY(1); }
+    .pub-year { font-family: 'DM Mono', monospace; font-size: .68rem; color: var(--accent); padding-top: .2rem; line-height: 1.6; }
+    .pub-content h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 400; margin-bottom: .35rem; line-height: 1.35; }
+    .pub-journal { font-size: .83rem; color: var(--muted); font-style: italic; margin-bottom: .5rem; }
+    .pub-authors { font-family: 'DM Mono', monospace; font-size: .63rem; color: var(--muted); line-height: 1.6; }
+    .pub-authors strong { color: var(--accent2); }
+    .pub-badges { margin-top: .7rem; display: flex; gap: .5rem; flex-wrap: wrap; }
+    .badge { font-family: 'DM Mono', monospace; font-size: .6rem; padding: .2rem .55rem; letter-spacing: .1em; text-transform: uppercase; }
+    .badge-teal   { background: rgba(94,234,212,.1);  color: var(--accent); }
+    .badge-purple { background: rgba(129,140,248,.1); color: var(--accent2); }
+    .badge-pink   { background: rgba(244,114,182,.1); color: var(--accent3); }
+
+    /* AWARDS PAGE */
+    #page-awards { min-height: 100vh; }
+    .awards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .award-card { background: var(--card); border: 1px solid var(--border); padding: 1.8rem; position: relative; overflow: hidden; transition: border-color .3s, transform .3s; }
+    .award-card:hover { border-color: rgba(251,191,36,.3); transform: translateY(-3px); }
+    .award-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: #fbbf24; }
+    .award-year { font-family: 'DM Mono', monospace; font-size: .65rem; color: #fbbf24; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .6rem; }
+    .award-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; line-height: 1.3; margin-bottom: .35rem; }
+    .award-org { font-size: .82rem; color: var(--muted); }
+
+    /* CONTACT */
+    .contact-section { border-top: 1px solid var(--border); position: relative; z-index: 2; }
+    .contact-inner { max-width: 600px; margin: 0 auto; padding: 7rem 3rem; text-align: center; }
+    .contact-inner h2 { margin-bottom: 1.2rem; }
+    .contact-inner p { color: var(--muted); line-height: 1.8; margin-bottom: 2.5rem; font-size: .97rem; }
+    .contact-email { font-family: 'DM Mono', monospace; font-size: .97rem; color: var(--accent); text-decoration: none; letter-spacing: .05em; border-bottom: 1px solid transparent; transition: border-color .25s; }
+    .contact-email:hover { border-color: var(--accent); }
+    .social-links { margin-top: 2.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .social-link { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: .65rem 1.4rem; border: 1px solid var(--border); transition: border-color .25s, color .25s; cursor: none; }
+    .social-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* FOOTER */
+    footer { position: relative; z-index: 2; border-top: 1px solid var(--border); padding: 1.8rem 3rem; display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; }
+    footer p { font-family: 'DM Mono', monospace; font-size: .65rem; color: var(--muted); letter-spacing: .1em; }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 2px; }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links li a { padding: .4rem .7rem; font-size: .65rem; }
+      #hero { padding: 0 1.5rem; }
+      .section-inner { padding: 5rem 1.5rem; }
+      .research-grid, .awards-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-ring" id="ring"></div>
+<canvas id="canvas"></canvas>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo" data-page="home">Suin<span>.</span>Kim</a>
+  <ul class="nav-links">
+    <li><a href="#" data-page="home" class="active">Home</a></li>
+    <li><a href="#" data-page="publications">Publications</a></li>
+    <li><a href="#" data-page="awards">Awards</a></li>
+    <li><a href="#" data-page="contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════ HOME PAGE ═══════════════ -->
+<div class="page active" id="page-home">
+
+  <section id="hero">
+    <div class="hero-tag">Postdoctoral Researcher · Statistics · Seoul National University</div>
+    <h1>Quantile,<br><em>Uncertainty</em>,<br>&amp; Language.</h1>
+    <p class="hero-sub">
+      Developing statistical methodology at the intersection of quantile regression,
+      uncertainty quantification, and language models.<br><br>
+      Ph.D. in Statistics, Korea University ·
+      Postdoctoral Researcher, Institute for Data Innovation in Science, SNU.
+    </p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary" data-page="publications">Publications</a>
+      <a href="#" class="btn-ghost" data-page="contact">Contact</a>
+      <a href="https://github.com/suinkim96" target="_blank" class="btn-ghost">GitHub ↗</a>
+    </div>
+    <div class="formula-strip">
+      <div class="formula-item">Q<sub>τ</sub>(Y|X) = <span>inf{y : F(y|X) ≥ τ}</span></div>
+      <div class="formula-item">ρ<sub>τ</sub>(u) = <span>u(τ − 𝟙{u&lt;0})</span></div>
+      <div class="formula-item">Ĉ<sub>n</sub>(x) = <span>{y : s(x,y) ≤ q̂<sub>1−α</sub>}</span></div>
+      <div class="formula-item">P(Y ∈ Ĉ<sub>n</sub>) ≥ <span>1 − α</span></div>
+    </div>
+  </section>
+
+  <div class="glowing-line"></div>
+
+  <!-- ABOUT -->
+  <section id="about-section">
+    <div class="section-inner">
+      <div class="section-label reveal">01 · About</div>
+      <h2 class="reveal">Statistician.<br><em>Researcher.</em></h2>
+      <div class="about-text reveal">
+        <p>
+          Postdoctoral researcher at the <strong>Institute for Data Innovation in Science, Seoul National University</strong>,
+          working under the supervision of <strong>Dr. Haeun Moon</strong>.
+        </p>
+        <p>
+          Received a Ph.D. in Statistics from <strong>Korea University</strong> (GPA 4.44/4.5),
+          advised by <strong>Prof. Yoonsuh Jung</strong>, with a focus on quantile regression and
+          conformal prediction.
+        </p>
+        <div class="edu-list">
+          <div class="edu-item">
+            <div class="edu-period">Mar 2026 – Present</div>
+            <div class="edu-degree">Postdoctoral Researcher</div>
+            <div class="edu-school">Seoul National University — IDIS</div>
+            <div class="edu-detail">Mentor: Dr. Haeun Moon</div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-period">Mar 2021 – Feb 2026</div>
+            <div class="edu-degree">Ph.D. in Statistics</div>
+            <div class="edu-school">Korea University</div>
+            <div class="edu-detail">GPA 4.44/4.5 · Advisor: Prof. Yoonsuh Jung</div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-period">Mar 2015 – Feb 2021</div>
+            <div class="edu-degree">B.A. in Statistics</div>
+            <div class="edu-school">Sungkyunkwan University</div>
+            <div class="edu-detail">GPA 4.31/4.5</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glowing-line"></div>
+
+  <!-- RESEARCH -->
+  <section id="research-section">
+    <div class="section-inner">
+      <div class="section-label reveal">02 · Research</div>
+      <h2 class="reveal">Research <em>Interests</em></h2>
+      <div class="research-grid">
+        <div class="research-card reveal">
+          <div class="research-icon">Q_τ</div>
+          <h3>Quantile Regression</h3>
+          <p>Ensemble methods, variable selection consistency, and robust estimation under heteroscedasticity.</p>
+          <div class="research-tags">
+            <span class="tag accent">Quantile Combination</span>
+            <span class="tag">Variable Selection</span>
+            <span class="tag">Heteroscedasticity</span>
+          </div>
+        </div>
+        <div class="research-card reveal">
+          <div class="research-icon">Ĉ_n(x)</div>
+          <h3>Uncertainty Quantification</h3>
+          <p>Distribution-free prediction intervals via conformal prediction and composite quantile conformalization.</p>
+          <div class="research-tags">
+            <span class="tag accent">Conformal Prediction</span>
+            <span class="tag">Prediction Intervals</span>
+            <span class="tag">Distribution-Free</span>
+          </div>
+        </div>
+        <div class="research-card reveal">
+          <div class="research-icon">LLM</div>
+          <h3>Language Models</h3>
+          <p>Statistical analysis of large language models and GPT-based information extraction via prompt engineering.</p>
+          <div class="research-tags">
+            <span class="tag accent">GPT</span>
+            <span class="tag">Prompt Engineering</span>
+            <span class="tag">NLP</span>
+          </div>
+        </div>
+        <div class="research-card reveal">
+          <div class="research-icon">∇ℒ(β)</div>
+          <h3>Penalized Regression</h3>
+          <p>Optimal tuning strategies for multiple penalty parameters and validation-based model selection.</p>
+          <div class="research-tags">
+            <span class="tag accent">Lasso</span>
+            <span class="tag">Model Selection</span>
+            <span class="tag">Tuning</span>
+          </div>
+        </div>
+        <div class="research-card reveal">
+          <div class="research-icon">PRS</div>
+          <h3>Polygenic Risk Prediction</h3>
+          <p>Improving polygenic risk score accuracy by modeling quantile-specific genetic effects.</p>
+          <div class="research-tags">
+            <span class="tag accent">Genomics</span>
+            <span class="tag">PRS</span>
+            <span class="tag">Quantile-Specific</span>
+          </div>
+        </div>
+        <div class="research-card reveal">
+          <div class="research-icon">ML</div>
+          <h3>ML Applications</h3>
+          <p>Ensemble learning, BERT-based sentiment analysis, and CNN chart analysis applied to industry data.</p>
+          <div class="research-tags">
+            <span class="tag accent">Ensemble Learning</span>
+            <span class="tag">KoBERT</span>
+            <span class="tag">Sentiment</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+<!-- ═══════════════ PUBLICATIONS PAGE ═══════════════ -->
+<div class="page" id="page-publications">
+  <section style="position:relative;z-index:2;background:var(--surface);min-height:100vh;">
+    <div class="section-inner" style="padding-top:9rem;">
+      <div class="section-label reveal">Publications</div>
+      <h2 class="reveal">Publications</h2>
+
+      <div class="pub-subheader reveal">Journal Articles</div>
+      <div class="pub-list">
+        <div class="pub-item reveal">
+          <div class="pub-year">2026</div>
+          <div class="pub-content">
+            <h4>Enhancing polygenic risk prediction by modeling quantile-specific genetic effects</h4>
+            <div class="pub-journal">Scientific Reports (2026)</div>
+            <div class="pub-authors"><strong>Suin Kim</strong>, Taewan Goo, Taesung Park, Mira Park</div>
+            <div class="pub-badges"><span class="badge badge-teal">Scientific Reports</span></div>
+          </div>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-year">2025</div>
+          <div class="pub-content">
+            <h4>Enhancing quantile estimation via quantile combination under heteroscedasticity</h4>
+            <div class="pub-journal">Statistical Papers, 66.142 (2025)</div>
+            <div class="pub-authors"><strong>Suin Kim</strong>, Yoonsuh Jung</div>
+            <div class="pub-badges"><span class="badge badge-teal">Statistical Papers</span></div>
+          </div>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-year">2025</div>
+          <div class="pub-content">
+            <h4>Variable-selection consistency of linear quantile regression by validation set approach</h4>
+            <div class="pub-journal">Statistics &amp; Probability Letters, 223 (2025), p. 110431</div>
+            <div class="pub-authors"><strong>Suin Kim</strong>, Sarang Lee, Nari Shin, Yoonsuh Jung</div>
+            <div class="pub-badges"><span class="badge badge-teal">SPL</span></div>
+          </div>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-year">2024</div>
+          <div class="pub-content">
+            <h4>Local quantile ensemble for machine learning methods</h4>
+            <div class="pub-journal">Communications for Statistical Applications and Methods, 31.6 (2024), pp. 627–644</div>
+            <div class="pub-authors"><strong>Suin Kim</strong>, Yoonsuh Jung</div>
+            <div class="pub-badges"><span class="badge badge-teal">CSAM</span></div>
+          </div>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-year">2024</div>
+          <div class="pub-content">
+            <h4>Ensemble learning for detecting game bot in MMORPG</h4>
+            <div class="pub-journal">The Korean Data &amp; Information Science Society, 35.4 (2024), pp. 461–473</div>
+            <div class="pub-authors">H. Jung, J. Choi, S. Weon, <strong>Suin Kim</strong>, J. Park, N. Lee, Y. Jung</div>
+            <div class="pub-badges"><span class="badge badge-purple">KDISS</span></div>
+          </div>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-year">2024</div>
+          <div class="pub-content">
+            <h4>AI-based early detection to prevent user churn in MMORPG</h4>
+            <div class="pub-journal">The Korean Journal of Applied Statistics, 37.4 (2024), pp. 525–539</div>
+            <div class="pub-authors">M. Lee, S. Park, S. Lee, <strong>Suin Kim</strong>, Y. Cho, D. Song, M. Lee, Y. Jung</div>
+            <div class="pub-badges"><span class="badge badge-purple">KJAS</span></div>
+          </div>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-year">2022</div>
+          <div class="pub-content">
+            <h4>Predictive model for academic underachievement of international students</h4>
+            <div class="pub-journal">Journal of Teaching &amp; Learning Research, 15.1 (2022), pp. 81–109</div>
+            <div class="pub-authors">H. Kim, M. Eom, <strong>Suin Kim</strong>, H. Gwon, S. Lee, S. Jin</div>
+          </div>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-year">2021</div>
+          <div class="pub-content">
+            <h4>An educational needs analysis on TPACK competency of prospective professors</h4>
+            <div class="pub-journal">Journal of Educational Issues, 34.3 (2021), pp. 53–74</div>
+            <div class="pub-authors">S. Jin, M. Eom, <strong>Suin Kim</strong>, H. Kim</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-subheader reveal" style="margin-top:1rem;">Working Papers</div>
+      <div class="pub-list">
+        <div class="pub-item reveal">
+          <div class="pub-year">Under<br>Review</div>
+          <div class="pub-content">
+            <h4>Conformalized composite quantile regression</h4>
+            <div class="pub-journal">Machine Learning (Under Review)</div>
+            <div class="pub-authors"><strong>Suin Kim</strong>, Yoonsuh Jung</div>
+            <div class="pub-badges"><span class="badge badge-pink">Under Review</span></div>
+          </div>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-year">Submitted</div>
+          <div class="pub-content">
+            <h4>Optimal tuning for multiple parameters in penalized regression models</h4>
+            <div class="pub-journal">Stat (Submitted)</div>
+            <div class="pub-authors">W. Shin, N. Kim, <strong>Suin Kim</strong>, Yoonsuh Jung</div>
+            <div class="pub-badges"><span class="badge badge-pink">Submitted</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <footer>
+    <p>© 2026 Suin Kim</p>
+    <p>Hosted on GitHub Pages</p>
+  </footer>
+</div><!-- /page-publications -->
+
+<!-- ═══════════════ AWARDS PAGE ═══════════════ -->
+<div class="page" id="page-awards">
+  <section style="position:relative;z-index:2;min-height:100vh;">
+    <div class="section-inner" style="padding-top:9rem;">
+      <div class="section-label reveal">Awards</div>
+      <h2 class="reveal">Honors &amp; <em>Awards</em></h2>
+      <div class="awards-grid">
+        <div class="award-card reveal">
+          <div class="award-year">Feb 2026</div>
+          <div class="award-title">President's Award</div>
+          <div class="award-org">Korean Statistical Society — Ph.D. Graduation</div>
+        </div>
+        <div class="award-card reveal">
+          <div class="award-year">Sep 2025</div>
+          <div class="award-title">Outstanding Paper Award</div>
+          <div class="award-org">Korea University</div>
+        </div>
+        <div class="award-card reveal">
+          <div class="award-year">Sep 2025</div>
+          <div class="award-title">Best Presentation Award — 1st Place</div>
+          <div class="award-org">2025 Fall KDISS Graduate Student Conference · Gyeongju</div>
+        </div>
+        <div class="award-card reveal">
+          <div class="award-year">Sep 2024</div>
+          <div class="award-title">Best Presentation Award — 1st Place</div>
+          <div class="award-org">2024 Fall KDISS Graduate Student Conference · Daegu</div>
+        </div>
+        <div class="award-card reveal">
+          <div class="award-year">2023</div>
+          <div class="award-title">Stock Theme Detection — 1st Prize</div>
+          <div class="award-org">Mirae Asset Securities · Seoul</div>
+        </div>
+        <div class="award-card reveal">
+          <div class="award-year">2019</div>
+          <div class="award-title">KOSPI Prediction Challenge — 4th Prize</div>
+          <div class="award-org">Mirae Asset Securities · Seoul</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>© 2026 Suin Kim</p>
+    <p>Hosted on GitHub Pages</p>
+  </footer>
+</div><!-- /page-awards -->
+
+<!-- ═══════════════ CONTACT PAGE ═══════════════ -->
+<div class="page" id="page-contact">
+  <section class="contact-section" style="min-height:100vh;display:flex;align-items:center;background:var(--surface);">
+    <div class="contact-inner" style="width:100%;">
+      <div class="section-label reveal" style="justify-content:center;">Contact</div>
+      <h2 class="reveal">Get in <em>touch.</em></h2>
+      <p class="reveal">Open to research collaborations, seminar invitations, and academic discussions.</p>
+      <a href="mailto:ksi2002@korea.ac.kr" class="contact-email reveal">ksi2002@korea.ac.kr</a>
+      <div class="social-links reveal">
+        <a href="https://github.com/suinkim96" target="_blank" class="social-link">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>© 2026 Suin Kim</p>
+    <p>Hosted on GitHub Pages</p>
+  </footer>
+</div><!-- /page-contact -->
+
+<script>
+  /* ── Cursor ── */
+  const dot = document.getElementById('dot'), ring = document.getElementById('ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  document.querySelectorAll('a,button,.research-card,.pub-item,.award-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('hovering'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('hovering'));
+  });
+  (function loop(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+
+  /* ── Nav scroll ── */
+  const navbar=document.getElementById('navbar');
+  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>50));
+
+  /* ── Page routing ── */
+  function navigateTo(pageId) {
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+
+    const target = document.getElementById('page-'+pageId);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo(0,0);
+      // trigger reveals on newly shown page
+      observeReveals(target);
+    }
+
+    const navLink = document.querySelector(`.nav-links a[data-page="${pageId}"]`);
+    if (navLink) navLink.classList.add('active');
+  }
+
+  document.querySelectorAll('[data-page]').forEach(el=>{
+    el.addEventListener('click',e=>{
+      const page = el.dataset.page;
+      if (!el.href || el.href === '#' || el.getAttribute('href') === '#') {
+        e.preventDefault();
+        navigateTo(page);
+      } else if (!el.target) {
+        e.preventDefault();
+        navigateTo(page);
+      }
+    });
+  });
+
+  /* ── Particle canvas ── */
+  const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+  let W,H;const pts=[];
+  function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const PAL=['#5eead4','#818cf8','#f472b6'];
+  class P{
+    constructor(){this.reset();}
+    reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.8+.3;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.c=PAL[Math.floor(Math.random()*3)];this.a=Math.random()*.5+.2;}
+    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=this.c;ctx.globalAlpha=this.a;ctx.fill();}
+  }
+  for(let i=0;i<120;i++)pts.push(new P());
+  (function loop(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{p.update();p.draw();});
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<90){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle='#5eead4';ctx.globalAlpha=(1-d/90)*.12;ctx.lineWidth=.5;ctx.stroke();}
+    }
+    ctx.globalAlpha=1;requestAnimationFrame(loop);
+  })();
+
+  /* ── Reveal observer (reusable) ── */
+  function observeReveals(root) {
+    const els = root ? root.querySelectorAll('.reveal:not(.visible)') : document.querySelectorAll('.reveal');
+    const ro = new IntersectionObserver(entries=>{
+      entries.forEach((e,i)=>{
+        if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);ro.unobserve(e.target);}
+      });
+    },{threshold:.1});
+    els.forEach(el=>ro.observe(el));
+  }
+  observeReveals(null);
+</script>
+</body>
+</html>
