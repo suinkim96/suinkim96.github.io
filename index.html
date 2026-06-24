@@ -1,591 +1,729 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Suin Kim — Postdoctoral Researcher</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Outfit:wght@200;300;400;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg:      #07090f;
-      --surface: #0d1117;
-      --border:  rgba(255,255,255,0.07);
-      --accent:  #5eead4;
-      --accent2: #818cf8;
-      --accent3: #f472b6;
-      --text:    #e2e8f0;
-      --muted:   #64748b;
-      --card:    rgba(15,23,42,0.7);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Suin Kim · Statistics</title>
+<meta name="description" content="Suin Kim — Postdoctoral Researcher in Statistics. Quantile regression, uncertainty quantification, and distribution-free inference." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F3F3F1;
+    --paper-2:#ECECE8;
+    --ink:#14161C;
+    --muted:#5B5F6B;
+    --faint:#8A8E99;
+    --line:#DEDED8;
+    --line-strong:#CFCFC8;
+    --accent:#3B3A9E;        /* quantile indigo */
+    --accent-deep:#23225C;
+    --accent-rgb:59,58,158;
+    --gold:#9C7A2E;          /* used only for award markers */
+    --maxw:1120px;
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+    --d:'Fraunces',Georgia,serif;
+    --b:'Spline Sans',system-ui,sans-serif;
+    --m:'IBM Plex Mono',ui-monospace,monospace;
+  }
 
-    /* Cursor */
-    .cursor-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
-    .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(94,234,212,0.4); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width .3s, height .3s, border-color .3s; }
-    .cursor-ring.hovering { width: 48px; height: 48px; border-color: var(--accent); }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--b);
+    font-weight:400;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    /* faint plotting grid */
+    background-image:
+      linear-gradient(rgba(20,22,28,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(20,22,28,.025) 1px,transparent 1px);
+    background-size:34px 34px;
+    background-position:-1px -1px;
+  }
+  a{color:inherit;}
+  ::selection{background:rgba(var(--accent-rgb),.16);}
 
-    #canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.35; }
-    body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.4; }
+  /* ---------- NAV ---------- */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(243,243,241,.82);
+    backdrop-filter:saturate(1.4) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:var(--maxw);margin:0 auto;
+    padding:0 28px;height:64px;
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+  }
+  .brand{display:flex;align-items:center;gap:11px;cursor:pointer;background:none;border:0;padding:0;}
+  .monogram{
+    width:30px;height:30px;flex:none;border-radius:4px;
+    background:var(--accent);color:#fff;
+    display:grid;place-items:center;
+    font-family:var(--d);font-weight:600;font-size:15px;line-height:1;
+  }
+  .brand-name{font-family:var(--d);font-weight:500;font-size:17px;letter-spacing:.2px;}
+  .tabs{display:flex;gap:4px;align-items:center;}
+  .tab{
+    appearance:none;border:0;background:none;cursor:pointer;
+    font-family:var(--m);font-size:11.5px;font-weight:500;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--muted);
+    padding:9px 13px;border-radius:6px;position:relative;
+    transition:color .18s ease,background .18s ease;
+  }
+  .tab:hover{color:var(--ink);background:rgba(20,22,28,.045);}
+  .tab[aria-selected="true"]{color:var(--accent);}
+  .tab[aria-selected="true"]::after{
+    content:"";position:absolute;left:13px;right:13px;bottom:2px;height:2px;
+    background:var(--accent);border-radius:2px;
+  }
+  .tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
-    /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1.4rem 3rem;
-      border-bottom: 1px solid transparent;
-      transition: border-color .4s, backdrop-filter .4s, background .4s;
-    }
-    nav.scrolled { border-color: var(--border); backdrop-filter: blur(20px); background: rgba(7,9,15,0.7); }
-    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 300; letter-spacing: .08em; color: var(--text); text-decoration: none; cursor: none; }
-    .nav-logo span { color: var(--accent); }
-    .nav-links { display: flex; gap: 0; list-style: none; }
-    .nav-links li a {
-      font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .12em;
-      color: var(--muted); text-decoration: none; text-transform: uppercase;
-      transition: color .25s; position: relative;
-      padding: .4rem 1.2rem; cursor: none;
-    }
-    .nav-links li a::after { content: ''; position: absolute; bottom: -4px; left: 1.2rem; right: 1.2rem; height: 1px; background: var(--accent); transform: scaleX(0); transition: transform .3s; }
-    .nav-links li a:hover,
-    .nav-links li a.active { color: var(--accent); }
-    .nav-links li a.active::after { transform: scaleX(1); }
+  /* ---------- LAYOUT ---------- */
+  main{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+  .panel{display:none;animation:fade .5s ease both;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 
-    /* PAGE SYSTEM */
-    .page { display: none; position: relative; z-index: 2; }
-    .page.active { display: block; }
+  .eyebrow{
+    font-family:var(--m);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);font-weight:500;display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--accent);opacity:.6;}
 
-    /* HERO */
-    #hero {
-      min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
-      padding: 0 max(3rem, 8vw);
-    }
-    .hero-tag { font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; gap: .8rem; opacity: 0; animation: fadeUp .8s .2s forwards; }
-    .hero-tag::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); }
-    h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 300; line-height: 1.0; letter-spacing: -.01em; opacity: 0; animation: fadeUp .9s .4s forwards; }
-    h1 em { font-style: italic; color: var(--accent); }
-    .hero-sub { margin-top: 2rem; font-size: 1rem; color: var(--muted); max-width: 500px; line-height: 1.8; opacity: 0; animation: fadeUp .9s .6s forwards; }
-    .hero-sub strong { color: var(--text); font-weight: 400; }
-    .hero-cta { margin-top: 2.8rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; opacity: 0; animation: fadeUp .9s .8s forwards; }
-    .btn-primary { padding: .75rem 1.8rem; background: var(--accent); color: var(--bg); font-family: 'DM Mono', monospace; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; font-weight: 400; transition: transform .2s, box-shadow .2s; cursor: none; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(94,234,212,.25); }
-    .btn-ghost { padding: .75rem 1.8rem; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; transition: border-color .25s, color .25s; cursor: none; }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-    .formula-strip { margin-top: 5rem; border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; gap: 3rem; flex-wrap: wrap; opacity: 0; animation: fadeUp .9s 1s forwards; }
-    .formula-item { font-family: 'DM Mono', monospace; font-size: .75rem; color: var(--muted); letter-spacing: .08em; }
-    .formula-item span { color: var(--accent2); }
+  .section-head{display:flex;align-items:baseline;gap:14px;margin:0 0 28px;}
+  .section-head h2{
+    font-family:var(--d);font-weight:500;font-size:clamp(26px,3.6vw,38px);
+    margin:0;letter-spacing:-.01em;
+  }
+  .section-head .count{font-family:var(--m);font-size:12px;color:var(--faint);}
 
-    /* COMMON */
-    .section-inner { max-width: 1100px; margin: 0 auto; padding: 7rem 3rem; }
-    .section-label { font-family: 'DM Mono', monospace; font-size: .7rem; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: .8rem; }
-    .section-label::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); }
-    h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300; line-height: 1.15; margin-bottom: 3.5rem; }
-    .glowing-line { height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: .4; position: relative; z-index: 2; }
+  /* ---------- HERO ---------- */
+  .hero{
+    display:grid;grid-template-columns:1.04fr .96fr;gap:56px;align-items:center;
+    padding:74px 0 60px;
+  }
+  .name-row{display:flex;align-items:center;gap:26px;margin:18px 0 0;}
+  .portrait{
+    position:relative;flex:none;width:128px;height:160px;border-radius:12px;overflow:hidden;
+    background:var(--paper-2);border:1px solid var(--line-strong);
+    box-shadow:0 16px 34px -24px rgba(35,34,92,.5);
+  }
+  .portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;}
+  .portrait .ph{
+    position:absolute;inset:0;z-index:1;display:grid;place-items:center;text-align:center;
+    font-family:var(--m);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);line-height:1.7;
+  }
+  .hero h1{
+    font-family:var(--d);font-weight:600;
+    font-size:clamp(44px,7.4vw,78px);line-height:.96;letter-spacing:-.025em;
+    margin:0;
+  }
+  .hero .role{
+    margin:20px 0 0;font-size:17px;color:var(--muted);max-width:30ch;line-height:1.5;
+  }
+  .hero .role b{color:var(--ink);font-weight:600;}
+  .interests{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 0;}
+  .chip{
+    font-family:var(--m);font-size:11.5px;letter-spacing:.02em;
+    border:1px solid var(--line-strong);border-radius:100px;
+    padding:6px 13px;color:var(--ink);background:rgba(255,255,255,.5);
+  }
+  .hero-links{display:flex;flex-wrap:wrap;gap:10px;margin:30px 0 0;}
+  .btn{
+    font-family:var(--m);font-size:12px;letter-spacing:.04em;text-decoration:none;
+    padding:11px 17px;border-radius:7px;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .15s ease,background .15s ease,box-shadow .15s ease;
+  }
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 1px 0 rgba(35,34,92,.4);}
+  .btn-primary:hover{transform:translateY(-2px);background:var(--accent-deep);}
+  .btn-ghost{border:1px solid var(--line-strong);color:var(--ink);background:rgba(255,255,255,.4);}
+  .btn-ghost:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--accent);}
 
-    /* ABOUT */
-    #about-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); position: relative; z-index: 2; }
-    .about-text p { color: var(--muted); line-height: 1.85; margin-bottom: 1.2rem; font-size: .97rem; }
-    .about-text p strong { color: var(--text); font-weight: 400; }
-    .edu-list { margin-top: 2.2rem; }
-    .edu-item { border-left: 1px solid var(--border); padding: 0 0 1.8rem 1.5rem; position: relative; }
-    .edu-item::before { content: ''; position: absolute; left: -4px; top: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
-    .edu-item:last-child { padding-bottom: 0; }
-    .edu-period { font-family: 'DM Mono', monospace; font-size: .65rem; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .3rem; }
-    .edu-degree { font-size: 1rem; font-weight: 400; color: var(--text); margin-bottom: .2rem; }
-    .edu-school { font-size: .87rem; color: var(--muted); }
-    .edu-detail { font-family: 'DM Mono', monospace; font-size: .67rem; color: var(--muted); margin-top: .3rem; }
+  /* plot */
+  .plot-wrap{position:relative;}
+  .plot-card{
+    border:1px solid var(--line);background:rgba(255,255,255,.55);
+    border-radius:14px;padding:20px 20px 14px;
+    box-shadow:0 24px 50px -32px rgba(35,34,92,.4);
+  }
+  .plot-card svg{display:block;width:100%;height:auto;}
+  .plot-cap{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:12px;font-family:var(--m);font-size:10.5px;color:var(--faint);letter-spacing:.04em;
+  }
+  .legend{display:flex;gap:13px;align-items:center;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .legend i{width:12px;height:8px;border-radius:2px;display:inline-block;}
 
-    /* RESEARCH */
-    #research-section { position: relative; z-index: 2; }
-    .research-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-    .research-card { background: var(--card); border: 1px solid var(--border); padding: 2rem; position: relative; overflow: hidden; transition: border-color .3s, transform .3s; cursor: none; }
-    .research-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(94,234,212,.04), transparent); opacity: 0; transition: opacity .3s; }
-    .research-card:hover { border-color: rgba(94,234,212,.3); transform: translateY(-4px); }
-    .research-card:hover::after { opacity: 1; }
-    .research-icon { font-family: 'DM Mono', monospace; font-size: 1rem; color: var(--accent2); margin-bottom: 1.2rem; }
-    .research-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; margin-bottom: .7rem; line-height: 1.25; }
-    .research-card p { font-size: .87rem; color: var(--muted); line-height: 1.7; }
-    .research-tags { margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: .4rem; }
-    .tag { font-family: 'DM Mono', monospace; font-size: .62rem; padding: .25rem .65rem; border: 1px solid var(--border); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-    .tag.accent { border-color: rgba(94,234,212,.3); color: var(--accent); }
+  /* svg animation */
+  .band{transform-box:fill-box;transform-origin:center;transform:scaleY(.04);opacity:0;}
+  .median{stroke-dasharray:1000;stroke-dashoffset:1000;}
+  .dot{opacity:0;}
+  .animate .band{animation:band 1s cubic-bezier(.2,.7,.2,1) forwards;}
+  .animate .b95{animation-delay:.15s;}
+  .animate .b80{animation-delay:.32s;}
+  .animate .b50{animation-delay:.49s;}
+  .animate .median{animation:draw 1.2s ease .5s forwards;}
+  .animate .dot{animation:pop .4s ease forwards;}
+  @keyframes band{to{transform:scaleY(1);opacity:1;}}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  @keyframes pop{to{opacity:1;}}
 
-    /* PUBLICATIONS PAGE */
-    #page-publications { background: var(--surface); min-height: 100vh; }
-    .pub-subheader { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .2em; color: var(--accent2); text-transform: uppercase; padding: 1.8rem 0 .8rem; border-bottom: 1px solid var(--border); }
-    .pub-list { display: flex; flex-direction: column; }
-    .pub-item { border-bottom: 1px solid var(--border); padding: 1.8rem 0; display: grid; grid-template-columns: 5.5rem 1fr; gap: 1.5rem; align-items: start; cursor: none; position: relative; }
-    .pub-item::before { content: ''; position: absolute; left: -3rem; top: 0; bottom: 0; width: 3px; background: var(--accent); transform: scaleY(0); transition: transform .3s; }
-    .pub-item:hover::before { transform: scaleY(1); }
-    .pub-year { font-family: 'DM Mono', monospace; font-size: .68rem; color: var(--accent); padding-top: .2rem; line-height: 1.6; }
-    .pub-content h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 400; margin-bottom: .35rem; line-height: 1.35; }
-    .pub-journal { font-size: .83rem; color: var(--muted); font-style: italic; margin-bottom: .5rem; }
-    .pub-authors { font-family: 'DM Mono', monospace; font-size: .63rem; color: var(--muted); line-height: 1.6; }
-    .pub-authors strong { color: var(--accent2); }
-    .pub-badges { margin-top: .7rem; display: flex; gap: .5rem; flex-wrap: wrap; }
-    .badge { font-family: 'DM Mono', monospace; font-size: .6rem; padding: .2rem .55rem; letter-spacing: .1em; text-transform: uppercase; }
-    .badge-teal   { background: rgba(94,234,212,.1);  color: var(--accent); }
-    .badge-purple { background: rgba(129,140,248,.1); color: var(--accent2); }
-    .badge-pink   { background: rgba(244,114,182,.1); color: var(--accent3); }
+  /* ---------- HOME lower ---------- */
+  .divider{height:1px;background:var(--line);margin:6px 0 56px;}
+  .about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:60px;padding-bottom:88px;}
+  .about p{font-size:17.5px;line-height:1.74;color:#2A2D36;margin:0 0 18px;max-width:54ch;}
+  .about p .hl{color:var(--accent);font-weight:500;}
 
-    /* AWARDS PAGE */
-    #page-awards { min-height: 100vh; }
-    .awards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-    .award-card { background: var(--card); border: 1px solid var(--border); padding: 1.8rem; position: relative; overflow: hidden; transition: border-color .3s, transform .3s; }
-    .award-card:hover { border-color: rgba(251,191,36,.3); transform: translateY(-3px); }
-    .award-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: #fbbf24; }
-    .award-year { font-family: 'DM Mono', monospace; font-size: .65rem; color: #fbbf24; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .6rem; }
-    .award-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; line-height: 1.3; margin-bottom: .35rem; }
-    .award-org { font-size: .82rem; color: var(--muted); }
+  .rail{border-left:2px solid var(--line);padding-left:24px;}
+  .rail h3{
+    font-family:var(--m);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--faint);font-weight:500;margin:0 0 18px;
+  }
+  .entry{margin:0 0 22px;position:relative;}
+  .entry::before{
+    content:"";position:absolute;left:-31px;top:7px;width:9px;height:9px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--accent);
+  }
+  .entry .yr{font-family:var(--m);font-size:11.5px;color:var(--accent);letter-spacing:.03em;}
+  .entry .ttl{font-weight:600;font-size:15.5px;margin:2px 0 1px;}
+  .entry .sub{font-size:13.5px;color:var(--muted);}
+  .rail + .rail{margin-top:34px;}
 
-    /* CONTACT */
-    .contact-section { border-top: 1px solid var(--border); position: relative; z-index: 2; }
-    .contact-inner { max-width: 600px; margin: 0 auto; padding: 7rem 3rem; text-align: center; }
-    .contact-inner h2 { margin-bottom: 1.2rem; }
-    .contact-inner p { color: var(--muted); line-height: 1.8; margin-bottom: 2.5rem; font-size: .97rem; }
-    .contact-email { font-family: 'DM Mono', monospace; font-size: .97rem; color: var(--accent); text-decoration: none; letter-spacing: .05em; border-bottom: 1px solid transparent; transition: border-color .25s; }
-    .contact-email:hover { border-color: var(--accent); }
-    .social-links { margin-top: 2.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-    .social-link { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: .65rem 1.4rem; border: 1px solid var(--border); transition: border-color .25s, color .25s; cursor: none; }
-    .social-link:hover { border-color: var(--accent); color: var(--accent); }
+  /* ---------- PUBLICATIONS ---------- */
+  .pubs{padding:64px 0 96px;}
+  .pub-group{margin-bottom:54px;}
+  .group-label{
+    font-family:var(--m);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 4px;font-weight:500;
+    display:flex;align-items:center;gap:12px;
+  }
+  .group-label::after{content:"";flex:1;height:1px;background:var(--line);}
+  .pub{
+    display:grid;grid-template-columns:84px 1fr;gap:8px;
+    padding:22px 4px;border-bottom:1px solid var(--line);transition:background .18s ease;
+    position:relative;
+  }
+  .pub:hover{background:rgba(var(--accent-rgb),.035);}
+  .pub .yr{font-family:var(--m);font-size:13px;color:var(--accent);padding-top:3px;}
+  .pub .ttl{font-family:var(--d);font-size:19.5px;font-weight:500;line-height:1.32;letter-spacing:-.005em;margin:0 0 7px;}
+  .pub .authors{font-size:14px;color:var(--muted);line-height:1.55;}
+  .pub .authors .me{color:var(--ink);font-weight:600;border-bottom:2px solid rgba(var(--accent-rgb),.35);}
+  .pub .venue{font-size:13.5px;color:var(--ink);margin-top:6px;}
+  .pub .venue em{font-style:italic;color:#33363F;}
+  .status{
+    display:inline-block;font-family:var(--m);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 9px;border-radius:100px;margin-left:2px;vertical-align:middle;
+    background:rgba(var(--accent-rgb),.1);color:var(--accent);
+  }
+  .status.toappear{background:rgba(156,122,46,.14);color:var(--gold);}
 
-    /* FOOTER */
-    footer { position: relative; z-index: 2; border-top: 1px solid var(--border); padding: 1.8rem 3rem; display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; }
-    footer p { font-family: 'DM Mono', monospace; font-size: .65rem; color: var(--muted); letter-spacing: .1em; }
+  /* talks */
+  .talk{display:grid;grid-template-columns:84px 1fr;gap:8px;padding:16px 4px;border-bottom:1px solid var(--line);}
+  .talk .yr{font-family:var(--m);font-size:13px;color:var(--muted);padding-top:2px;}
+  .talk .t-ttl{font-size:15.5px;font-weight:500;line-height:1.4;}
+  .talk .t-sub{font-size:13px;color:var(--muted);margin-top:3px;}
+  .prize{font-family:var(--m);font-size:10px;color:var(--gold);letter-spacing:.06em;border:1px solid rgba(156,122,46,.4);border-radius:4px;padding:1px 6px;margin-left:6px;}
 
-    /* REVEAL */
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  /* ---------- AWARDS ---------- */
+  .awards{padding:64px 0 110px;max-width:840px;}
+  .award{
+    display:grid;grid-template-columns:120px 1fr;gap:24px;align-items:start;
+    padding:30px 0;border-bottom:1px solid var(--line);position:relative;
+  }
+  .award .date{font-family:var(--m);font-size:13px;color:var(--accent);padding-top:5px;}
+  .award h3{font-family:var(--d);font-weight:500;font-size:23px;margin:0 0 6px;line-height:1.25;letter-spacing:-.01em;}
+  .award .issuer{font-size:14.5px;color:var(--muted);}
+  .award .mark{
+    position:absolute;right:0;top:30px;font-family:var(--m);font-size:11px;
+    color:var(--gold);border:1px solid rgba(156,122,46,.35);border-radius:100px;padding:4px 11px;
+  }
 
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 2px; }
+  /* ---------- CONTACT ---------- */
+  .contact{padding:74px 0 120px;}
+  .contact-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:start;}
+  .contact-lead{font-family:var(--d);font-weight:400;font-size:clamp(28px,4vw,42px);line-height:1.2;letter-spacing:-.015em;margin:14px 0 0;}
+  .contact-lead .accent{color:var(--accent);}
+  .clist{display:flex;flex-direction:column;gap:2px;margin-top:8px;}
+  .crow{
+    display:flex;align-items:center;gap:16px;text-decoration:none;
+    padding:18px 6px;border-bottom:1px solid var(--line);transition:padding .18s ease,color .18s ease;
+  }
+  .crow:hover{padding-left:14px;color:var(--accent);}
+  .crow .ic{
+    width:38px;height:38px;flex:none;border-radius:9px;border:1px solid var(--line-strong);
+    display:grid;place-items:center;color:var(--accent);background:rgba(255,255,255,.5);
+  }
+  .crow .lbl{font-family:var(--m);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);}
+  .crow .val{font-size:16px;font-weight:500;color:var(--ink);}
+  .crow:hover .val{color:var(--accent);}
+  .loc{margin-top:30px;font-size:14.5px;color:var(--muted);line-height:1.6;}
+  .loc b{color:var(--ink);font-weight:600;}
 
-    @media (max-width: 768px) {
-      nav { padding: 1.2rem 1.5rem; }
-      .nav-links li a { padding: .4rem .7rem; font-size: .65rem; }
-      #hero { padding: 0 1.5rem; }
-      .section-inner { padding: 5rem 1.5rem; }
-      .research-grid, .awards-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 2.8rem; }
-    }
-  </style>
+  footer{
+    border-top:1px solid var(--line);
+    padding:26px 28px;max-width:var(--maxw);margin:0 auto;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+    font-family:var(--m);font-size:11px;color:var(--faint);letter-spacing:.04em;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;gap:38px;padding:48px 0 40px;}
+    .plot-wrap{order:-1;}
+    .about-grid{grid-template-columns:1fr;gap:44px;}
+    .contact-grid{grid-template-columns:1fr;gap:36px;}
+  }
+  @media (max-width:680px){
+    .nav-inner{padding:0 16px;height:58px;}
+    .brand-name{display:none;}
+    .tab{padding:8px 9px;font-size:10.5px;letter-spacing:.08em;}
+    main{padding:0 16px;}
+    .name-row{gap:18px;}
+    .portrait{width:96px;height:120px;}
+    .pub,.talk{grid-template-columns:1fr;gap:6px;}
+    .pub .yr,.talk .yr{padding-top:0;}
+    .award{grid-template-columns:1fr;gap:4px;}
+    .award .mark{position:static;display:inline-block;margin-top:8px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+    .band{transform:none;opacity:1;}
+    .median{stroke-dashoffset:0;}
+    .dot{opacity:1;}
+  }
+</style>
 </head>
 <body>
 
-<div class="cursor-dot" id="dot"></div>
-<div class="cursor-ring" id="ring"></div>
-<canvas id="canvas"></canvas>
-
-<!-- NAV -->
-<nav id="navbar">
-  <a href="#" class="nav-logo" data-page="home">Suin<span>.</span>Kim</a>
-  <ul class="nav-links">
-    <li><a href="#" data-page="home" class="active">Home</a></li>
-    <li><a href="#" data-page="publications">Publications</a></li>
-    <li><a href="#" data-page="awards">Awards</a></li>
-    <li><a href="#" data-page="contact">Contact</a></li>
-  </ul>
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="brand" data-go="home" aria-label="Home">
+      <span class="monogram">SK</span>
+      <span class="brand-name">Suin Kim</span>
+    </button>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="home" aria-selected="true">Home</button>
+      <button class="tab" role="tab" data-tab="pubs" aria-selected="false">Publications</button>
+      <button class="tab" role="tab" data-tab="awards" aria-selected="false">Awards</button>
+      <button class="tab" role="tab" data-tab="contact" aria-selected="false">Contact</button>
+    </div>
+  </div>
 </nav>
 
-<!-- ═══════════════ HOME PAGE ═══════════════ -->
-<div class="page active" id="page-home">
+<main>
 
-  <section id="hero">
-    <div class="hero-tag">Postdoctoral Researcher · Statistics · Seoul National University</div>
-    <h1>Quantile,<br><em>Uncertainty</em>,<br>&amp; Language.</h1>
-    <p class="hero-sub">
-      Developing statistical methodology at the intersection of quantile regression,
-      uncertainty quantification, and language models.<br><br>
-      Ph.D. in Statistics, Korea University ·
-      Postdoctoral Researcher, Institute for Data Innovation in Science, SNU.
-    </p>
-    <div class="hero-cta">
-      <a href="#" class="btn-primary" data-page="publications">Publications</a>
-      <a href="#" class="btn-ghost" data-page="contact">Contact</a>
-      <a href="https://github.com/suinkim96" target="_blank" class="btn-ghost">GitHub ↗</a>
-    </div>
-    <div class="formula-strip">
-      <div class="formula-item">Q<sub>τ</sub>(Y|X) = <span>inf{y : F(y|X) ≥ τ}</span></div>
-      <div class="formula-item">ρ<sub>τ</sub>(u) = <span>u(τ − 𝟙{u&lt;0})</span></div>
-      <div class="formula-item">Ĉ<sub>n</sub>(x) = <span>{y : s(x,y) ≤ q̂<sub>1−α</sub>}</span></div>
-      <div class="formula-item">P(Y ∈ Ĉ<sub>n</sub>) ≥ <span>1 − α</span></div>
-    </div>
-  </section>
-
-  <div class="glowing-line"></div>
-
-  <!-- ABOUT -->
-  <section id="about-section">
-    <div class="section-inner">
-      <div class="section-label reveal">01 · About</div>
-      <h2 class="reveal">Statistician.<br><em>Researcher.</em></h2>
-      <div class="about-text reveal">
-        <p>
-          Postdoctoral researcher at the <strong>Institute for Data Innovation in Science, Seoul National University</strong>,
-          working under the supervision of <strong>Dr. Haeun Moon</strong>.
-        </p>
-        <p>
-          Received a Ph.D. in Statistics from <strong>Korea University</strong> (GPA 4.44/4.5),
-          advised by <strong>Prof. Yoonsuh Jung</strong>, with a focus on quantile regression and
-          conformal prediction.
-        </p>
-        <div class="edu-list">
-          <div class="edu-item">
-            <div class="edu-period">Mar 2026 – Present</div>
-            <div class="edu-degree">Postdoctoral Researcher</div>
-            <div class="edu-school">Seoul National University — IDIS</div>
-            <div class="edu-detail">Mentor: Dr. Haeun Moon</div>
+  <!-- ===================== HOME ===================== -->
+  <section class="panel active" id="home" role="tabpanel">
+    <div class="hero">
+      <div>
+        <span class="eyebrow">Postdoctoral Researcher · Statistics</span>
+        <div class="name-row">
+          <div class="portrait">
+            <img src="photo.jpg" alt="Suin Kim" onerror="this.style.display='none'">
+            <span class="ph">Add<br>photo.jpg</span>
           </div>
-          <div class="edu-item">
-            <div class="edu-period">Mar 2021 – Feb 2026</div>
-            <div class="edu-degree">Ph.D. in Statistics</div>
-            <div class="edu-school">Korea University</div>
-            <div class="edu-detail">GPA 4.44/4.5 · Advisor: Prof. Yoonsuh Jung</div>
+          <h1>Suin<br>Kim</h1>
+        </div>
+        <p class="role">Quantifying uncertainty with <b>distribution-free</b> guarantees at the <b>Institute for Data Innovation in Science</b>, Seoul National University.</p>
+        <div class="interests">
+          <span class="chip">Quantile Regression</span>
+          <span class="chip">Uncertainty Quantification</span>
+          <span class="chip">Distribution-free Inference</span>
+        </div>
+        <div class="hero-links">
+          <a class="btn btn-primary" href="#" data-go="pubs">View publications →</a>
+          <a class="btn btn-ghost" href="https://github.com/suinkim96" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn btn-ghost" href="mailto:sikimx@snu.ac.kr">Email</a>
+        </div>
+      </div>
+
+      <div class="plot-wrap">
+        <div class="plot-card">
+          <svg id="plot" viewBox="0 0 460 320" role="img" aria-label="Prediction band sketch">
+            <!-- drawn by JS -->
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="about-grid">
+      <div class="about">
+        <span class="eyebrow" style="margin-bottom:18px;display:inline-flex;">About</span>
+        <p>I am a statistician working at the intersection of <span class="hl">quantile regression</span> and <span class="hl">conformal prediction</span>. My research designs estimators that remain reliable under heteroscedasticity and produce prediction intervals with finite-sample, distribution-free coverage.</p>
+        <p>I completed my Ph.D. in Statistics at Korea University under Dr. Yoonsuh Jung, and now continue this work as a postdoctoral researcher under the mentorship of Dr. Haeun Moon.</p>
+      </div>
+
+      <div>
+        <div class="rail">
+          <h3>Current Position</h3>
+          <div class="entry">
+            <div class="yr">Mar 2026 — Present</div>
+            <div class="ttl">Postdoctoral Researcher</div>
+            <div class="sub">Institute for Data Innovation in Science, Seoul National University · Mentor: Dr. Haeun Moon</div>
           </div>
-          <div class="edu-item">
-            <div class="edu-period">Mar 2015 – Feb 2021</div>
-            <div class="edu-degree">B.A. in Statistics</div>
-            <div class="edu-school">Sungkyunkwan University</div>
-            <div class="edu-detail">GPA 4.31/4.5</div>
+        </div>
+
+        <div class="rail">
+          <h3>Education</h3>
+          <div class="entry">
+            <div class="yr">2021 — 2026</div>
+            <div class="ttl">Ph.D. in Statistics</div>
+            <div class="sub">Korea University · GPA 4.44 / 4.5 · Advisor: Dr. Yoonsuh Jung</div>
+          </div>
+          <div class="entry">
+            <div class="yr">2015 — 2021</div>
+            <div class="ttl">B.A. in Statistics</div>
+            <div class="sub">Sungkyunkwan University · GPA 4.31 / 4.5</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="glowing-line"></div>
+  <!-- ===================== PUBLICATIONS ===================== -->
+  <section class="panel" id="pubs" role="tabpanel">
+    <div class="pubs">
+      <div class="section-head" style="padding-top:64px;">
+        <span class="eyebrow">Research</span>
+      </div>
+      <h2 style="font-family:var(--d);font-weight:500;font-size:clamp(30px,5vw,46px);margin:-14px 0 44px;letter-spacing:-.02em;">Publications</h2>
 
-  <!-- RESEARCH -->
-  <section id="research-section">
-    <div class="section-inner">
-      <div class="section-label reveal">02 · Research</div>
-      <h2 class="reveal">Research <em>Interests</em></h2>
-      <div class="research-grid">
-        <div class="research-card reveal">
-          <div class="research-icon">Q_τ</div>
-          <h3>Quantile Regression</h3>
-          <p>Ensemble methods, variable selection consistency, and robust estimation under heteroscedasticity.</p>
-          <div class="research-tags">
-            <span class="tag accent">Quantile Combination</span>
-            <span class="tag">Variable Selection</span>
-            <span class="tag">Heteroscedasticity</span>
+      <!-- Journal articles -->
+      <div class="pub-group">
+        <p class="group-label">Journal Articles</p>
+
+        <article class="pub">
+          <div class="yr">2026</div>
+          <div>
+            <h3 class="ttl">Optimal Selection of Parameter-Wise Shrinkage Parameters in Penalized Regression Models</h3>
+            <div class="authors">Wooyoung Shin, Nahee Kim, <span class="me">Suin Kim</span>, Yoonsuh Jung</div>
+            <div class="venue"><em>Stat</em> <span class="status toappear">To appear</span></div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2025</div>
+          <div>
+            <h3 class="ttl">Enhancing quantile estimation via quantile combination under heteroscedasticity</h3>
+            <div class="authors"><span class="me">Suin Kim</span>, Yoonsuh Jung</div>
+            <div class="venue"><em>Statistical Papers</em> 66.142</div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2025</div>
+          <div>
+            <h3 class="ttl">Variable-selection consistency of linear quantile regression by validation set approach</h3>
+            <div class="authors"><span class="me">Suin Kim</span>, Sarang Lee, Nari Shin, Yoonsuh Jung</div>
+            <div class="venue"><em>Statistics &amp; Probability Letters</em> 223, 110431</div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2024</div>
+          <div>
+            <h3 class="ttl">Local quantile ensemble for machine learning methods</h3>
+            <div class="authors"><span class="me">Suin Kim</span>, Yoonsuh Jung</div>
+            <div class="venue"><em>Communications for Statistical Applications and Methods</em> 31.6, 627–644</div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2024</div>
+          <div>
+            <h3 class="ttl">Ensemble learning for detecting game bot in MMORPG</h3>
+            <div class="authors">Hyunsue Jung, Jungwon Choi, Sangjun Weon, <span class="me">Suin Kim</span>, Jongbeom Park, Nayeon Lee, Yoonsuh Jung</div>
+            <div class="venue"><em>The Korean Data &amp; Information Science Society</em> 35.4, 461–473</div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2024</div>
+          <div>
+            <h3 class="ttl">AI-based early detection to prevent user churn in MMORPG</h3>
+            <div class="authors">Minhyuk Lee, Sunwoo Park, Sunghwan Lee, <span class="me">Suin Kim</span>, Yoonyoung Cho, Daesub Song, Moonyoung Lee, Yoonsuh Jung</div>
+            <div class="venue"><em>The Korean Journal of Applied Statistics</em> 37.4, 525–539</div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2022</div>
+          <div>
+            <h3 class="ttl">Predictive model for academic underachievement of international students</h3>
+            <div class="authors">Hyojung Kim, Miri Eom, <span class="me">Suin Kim</span>, Hyejung Gwon, Sugang Lee, Seoyeon Jin</div>
+            <div class="venue"><em>Journal of Teaching &amp; Learning Research</em> 15.1, 81–109</div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2021</div>
+          <div>
+            <h3 class="ttl">An educational needs analysis on TPACK competency of prospective professors</h3>
+            <div class="authors">Seoyeon Jin, Miri Eom, <span class="me">Suin Kim</span>, Hyojung Kim</div>
+            <div class="venue"><em>Journal of Educational Issues</em> 34.3, 53–74</div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Working papers -->
+      <div class="pub-group">
+        <p class="group-label">Working Papers</p>
+
+        <article class="pub">
+          <div class="yr">2026</div>
+          <div>
+            <h3 class="ttl">Conformalized composite quantile regression</h3>
+            <div class="authors"><span class="me">Suin Kim</span>, Yoonsuh Jung</div>
+            <div class="venue">Under review · <em>Machine Learning</em> <span class="status">Under review</span></div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2026</div>
+          <div>
+            <h3 class="ttl">Quantile-Blending for Stable Variable Selection in Quantile Regression</h3>
+            <div class="authors"><span class="me">Suin Kim</span>, Yoonsuh Jung</div>
+            <div class="venue">Under review · <em>Electronic Journal of Statistics</em> <span class="status">Under review</span></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Talks -->
+      <div class="pub-group">
+        <p class="group-label">Selected Talks</p>
+
+        <div class="talk">
+          <div class="yr">2025</div>
+          <div>
+            <div class="t-ttl">Efficient uncertainty quantification via composite quantile conformalization<span class="prize">1st prize</span></div>
+            <div class="t-sub">2025 Fall KDISS · Gyeongju, S. Korea</div>
           </div>
         </div>
-        <div class="research-card reveal">
-          <div class="research-icon">Ĉ_n(x)</div>
-          <h3>Uncertainty Quantification</h3>
-          <p>Distribution-free prediction intervals via conformal prediction and composite quantile conformalization.</p>
-          <div class="research-tags">
-            <span class="tag accent">Conformal Prediction</span>
-            <span class="tag">Prediction Intervals</span>
-            <span class="tag">Distribution-Free</span>
+        <div class="talk">
+          <div class="yr">2025</div>
+          <div>
+            <div class="t-ttl">Conformalized composite quantile regression</div>
+            <div class="t-sub">2025 Summer KSS · Gyeongju, S. Korea</div>
           </div>
         </div>
-        <div class="research-card reveal">
-          <div class="research-icon">LLM</div>
-          <h3>Language Models</h3>
-          <p>Statistical analysis of large language models and GPT-based information extraction via prompt engineering.</p>
-          <div class="research-tags">
-            <span class="tag accent">GPT</span>
-            <span class="tag">Prompt Engineering</span>
-            <span class="tag">NLP</span>
+        <div class="talk">
+          <div class="yr">2024</div>
+          <div>
+            <div class="t-ttl">Efficient combining estimator for targeting quantiles under heteroscedasticity<span class="prize">1st prize</span></div>
+            <div class="t-sub">2024 Fall KDISS · Daegu, S. Korea</div>
           </div>
         </div>
-        <div class="research-card reveal">
-          <div class="research-icon">∇ℒ(β)</div>
-          <h3>Penalized Regression</h3>
-          <p>Optimal tuning strategies for multiple penalty parameters and validation-based model selection.</p>
-          <div class="research-tags">
-            <span class="tag accent">Lasso</span>
-            <span class="tag">Model Selection</span>
-            <span class="tag">Tuning</span>
-          </div>
-        </div>
-        <div class="research-card reveal">
-          <div class="research-icon">PRS</div>
-          <h3>Polygenic Risk Prediction</h3>
-          <p>Improving polygenic risk score accuracy by modeling quantile-specific genetic effects.</p>
-          <div class="research-tags">
-            <span class="tag accent">Genomics</span>
-            <span class="tag">PRS</span>
-            <span class="tag">Quantile-Specific</span>
-          </div>
-        </div>
-        <div class="research-card reveal">
-          <div class="research-icon">ML</div>
-          <h3>ML Applications</h3>
-          <p>Ensemble learning, BERT-based sentiment analysis, and CNN chart analysis applied to industry data.</p>
-          <div class="research-tags">
-            <span class="tag accent">Ensemble Learning</span>
-            <span class="tag">KoBERT</span>
-            <span class="tag">Sentiment</span>
+        <div class="talk">
+          <div class="yr">2022</div>
+          <div>
+            <div class="t-ttl">Locally averaging quantile regression</div>
+            <div class="t-sub">2022 Winter KDAS · Busan, S. Korea</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-</div><!-- /page-home -->
+  <!-- ===================== AWARDS ===================== -->
+  <section class="panel" id="awards" role="tabpanel">
+    <div class="awards">
+      <div class="section-head" style="padding-top:64px;">
+        <span class="eyebrow">Recognition</span>
+      </div>
+      <h2 style="font-family:var(--d);font-weight:500;font-size:clamp(30px,5vw,46px);margin:-14px 0 44px;letter-spacing:-.02em;">Awards &amp; Honors</h2>
 
-<!-- ═══════════════ PUBLICATIONS PAGE ═══════════════ -->
-<div class="page" id="page-publications">
-  <section style="position:relative;z-index:2;background:var(--surface);min-height:100vh;">
-    <div class="section-inner" style="padding-top:9rem;">
-      <div class="section-label reveal">Publications</div>
-      <h2 class="reveal">Publications</h2>
-
-      <div class="pub-subheader reveal">Journal Articles</div>
-      <div class="pub-list">
-        <div class="pub-item reveal">
-          <div class="pub-year">2026</div>
-          <div class="pub-content">
-            <h4>Enhancing polygenic risk prediction by modeling quantile-specific genetic effects</h4>
-            <div class="pub-journal">Scientific Reports (2026)</div>
-            <div class="pub-authors"><strong>Suin Kim</strong>, Taewan Goo, Taesung Park, Mira Park</div>
-            <div class="pub-badges"><span class="badge badge-teal">Scientific Reports</span></div>
-          </div>
+      <div class="award">
+        <div class="date">Feb 2026</div>
+        <div>
+          <h3>President's Award</h3>
+          <div class="issuer">Korean Statistical Society (KSS) — for Ph.D. graduation</div>
         </div>
-        <div class="pub-item reveal">
-          <div class="pub-year">2025</div>
-          <div class="pub-content">
-            <h4>Enhancing quantile estimation via quantile combination under heteroscedasticity</h4>
-            <div class="pub-journal">Statistical Papers, 66.142 (2025)</div>
-            <div class="pub-authors"><strong>Suin Kim</strong>, Yoonsuh Jung</div>
-            <div class="pub-badges"><span class="badge badge-teal">Statistical Papers</span></div>
-          </div>
-        </div>
-        <div class="pub-item reveal">
-          <div class="pub-year">2025</div>
-          <div class="pub-content">
-            <h4>Variable-selection consistency of linear quantile regression by validation set approach</h4>
-            <div class="pub-journal">Statistics &amp; Probability Letters, 223 (2025), p. 110431</div>
-            <div class="pub-authors"><strong>Suin Kim</strong>, Sarang Lee, Nari Shin, Yoonsuh Jung</div>
-            <div class="pub-badges"><span class="badge badge-teal">SPL</span></div>
-          </div>
-        </div>
-        <div class="pub-item reveal">
-          <div class="pub-year">2024</div>
-          <div class="pub-content">
-            <h4>Local quantile ensemble for machine learning methods</h4>
-            <div class="pub-journal">Communications for Statistical Applications and Methods, 31.6 (2024), pp. 627–644</div>
-            <div class="pub-authors"><strong>Suin Kim</strong>, Yoonsuh Jung</div>
-            <div class="pub-badges"><span class="badge badge-teal">CSAM</span></div>
-          </div>
-        </div>
-        <div class="pub-item reveal">
-          <div class="pub-year">2024</div>
-          <div class="pub-content">
-            <h4>Ensemble learning for detecting game bot in MMORPG</h4>
-            <div class="pub-journal">The Korean Data &amp; Information Science Society, 35.4 (2024), pp. 461–473</div>
-            <div class="pub-authors">H. Jung, J. Choi, S. Weon, <strong>Suin Kim</strong>, J. Park, N. Lee, Y. Jung</div>
-            <div class="pub-badges"><span class="badge badge-purple">KDISS</span></div>
-          </div>
-        </div>
-        <div class="pub-item reveal">
-          <div class="pub-year">2024</div>
-          <div class="pub-content">
-            <h4>AI-based early detection to prevent user churn in MMORPG</h4>
-            <div class="pub-journal">The Korean Journal of Applied Statistics, 37.4 (2024), pp. 525–539</div>
-            <div class="pub-authors">M. Lee, S. Park, S. Lee, <strong>Suin Kim</strong>, Y. Cho, D. Song, M. Lee, Y. Jung</div>
-            <div class="pub-badges"><span class="badge badge-purple">KJAS</span></div>
-          </div>
-        </div>
-        <div class="pub-item reveal">
-          <div class="pub-year">2022</div>
-          <div class="pub-content">
-            <h4>Predictive model for academic underachievement of international students</h4>
-            <div class="pub-journal">Journal of Teaching &amp; Learning Research, 15.1 (2022), pp. 81–109</div>
-            <div class="pub-authors">H. Kim, M. Eom, <strong>Suin Kim</strong>, H. Gwon, S. Lee, S. Jin</div>
-          </div>
-        </div>
-        <div class="pub-item reveal">
-          <div class="pub-year">2021</div>
-          <div class="pub-content">
-            <h4>An educational needs analysis on TPACK competency of prospective professors</h4>
-            <div class="pub-journal">Journal of Educational Issues, 34.3 (2021), pp. 53–74</div>
-            <div class="pub-authors">S. Jin, M. Eom, <strong>Suin Kim</strong>, H. Kim</div>
-          </div>
-        </div>
+        <span class="mark">Honor</span>
       </div>
 
-      <div class="pub-subheader reveal" style="margin-top:1rem;">Working Papers</div>
-      <div class="pub-list">
-        <div class="pub-item reveal">
-          <div class="pub-year">Under<br>Review</div>
-          <div class="pub-content">
-            <h4>Conformalized composite quantile regression</h4>
-            <div class="pub-journal">Machine Learning (Under Review)</div>
-            <div class="pub-authors"><strong>Suin Kim</strong>, Yoonsuh Jung</div>
-            <div class="pub-badges"><span class="badge badge-pink">Under Review</span></div>
-          </div>
+      <div class="award">
+        <div class="date">Sep 2025</div>
+        <div>
+          <h3>Outstanding Paper Award</h3>
+          <div class="issuer">Korea University</div>
         </div>
-        <div class="pub-item reveal">
-          <div class="pub-year">Submitted</div>
-          <div class="pub-content">
-            <h4>Optimal tuning for multiple parameters in penalized regression models</h4>
-            <div class="pub-journal">Stat (Submitted)</div>
-            <div class="pub-authors">W. Shin, N. Kim, <strong>Suin Kim</strong>, Yoonsuh Jung</div>
-            <div class="pub-badges"><span class="badge badge-pink">Submitted</span></div>
-          </div>
-        </div>
+        <span class="mark">Paper</span>
       </div>
 
+      <div class="award">
+        <div class="date">Sep 2025</div>
+        <div>
+          <h3>Best Presentation Award — First Place</h3>
+          <div class="issuer">Graduate Student Conference, Korean Data &amp; Information Science Society</div>
+        </div>
+        <span class="mark">1st place</span>
+      </div>
+
+      <div class="award">
+        <div class="date">Sep 2024</div>
+        <div>
+          <h3>Best Presentation Award — First Place</h3>
+          <div class="issuer">Graduate Student Conference, Korean Data &amp; Information Science Society</div>
+        </div>
+        <span class="mark">1st place</span>
+      </div>
     </div>
   </section>
-  <footer>
-    <p>© 2026 Suin Kim</p>
-    <p>Hosted on GitHub Pages</p>
-  </footer>
-</div><!-- /page-publications -->
 
-<!-- ═══════════════ AWARDS PAGE ═══════════════ -->
-<div class="page" id="page-awards">
-  <section style="position:relative;z-index:2;min-height:100vh;">
-    <div class="section-inner" style="padding-top:9rem;">
-      <div class="section-label reveal">Awards</div>
-      <h2 class="reveal">Honors &amp; <em>Awards</em></h2>
-      <div class="awards-grid">
-        <div class="award-card reveal">
-          <div class="award-year">Feb 2026</div>
-          <div class="award-title">President's Award</div>
-          <div class="award-org">Korean Statistical Society — Ph.D. Graduation</div>
+  <!-- ===================== CONTACT ===================== -->
+  <section class="panel" id="contact" role="tabpanel">
+    <div class="contact">
+      <div class="contact-grid">
+        <div>
+          <span class="eyebrow">Get in touch</span>
+          <p class="contact-lead">Open to proposals on <span class="accent">any statistical topic</span> or interdisciplinary collaboration.</p>
+          <div class="loc">
+            <b>Institute for Data Innovation in Science</b><br>
+            Seoul National University<br>
+            Seoul, South Korea
+          </div>
         </div>
-        <div class="award-card reveal">
-          <div class="award-year">Sep 2025</div>
-          <div class="award-title">Outstanding Paper Award</div>
-          <div class="award-org">Korea University</div>
-        </div>
-        <div class="award-card reveal">
-          <div class="award-year">Sep 2025</div>
-          <div class="award-title">Best Presentation Award — 1st Place</div>
-          <div class="award-org">2025 Fall KDISS Graduate Student Conference · Gyeongju</div>
-        </div>
-        <div class="award-card reveal">
-          <div class="award-year">Sep 2024</div>
-          <div class="award-title">Best Presentation Award — 1st Place</div>
-          <div class="award-org">2024 Fall KDISS Graduate Student Conference · Daegu</div>
-        </div>
-        <div class="award-card reveal">
-          <div class="award-year">2023</div>
-          <div class="award-title">Stock Theme Detection — 1st Prize</div>
-          <div class="award-org">Mirae Asset Securities · Seoul</div>
-        </div>
-        <div class="award-card reveal">
-          <div class="award-year">2019</div>
-          <div class="award-title">KOSPI Prediction Challenge — 4th Prize</div>
-          <div class="award-org">Mirae Asset Securities · Seoul</div>
+
+        <div class="clist">
+          <a class="crow" href="mailto:sikimx@snu.ac.kr">
+            <span class="ic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            </span>
+            <span><span class="lbl">Email</span><br><span class="val">sikimx@snu.ac.kr</span></span>
+          </a>
+          <a class="crow" href="https://suinkim96.github.io" target="_blank" rel="noopener">
+            <span class="ic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18"/></svg>
+            </span>
+            <span><span class="lbl">Website</span><br><span class="val">suinkim96.github.io</span></span>
+          </a>
+          <a class="crow" href="https://github.com/suinkim96" target="_blank" rel="noopener">
+            <span class="ic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+            </span>
+            <span><span class="lbl">GitHub</span><br><span class="val">github.com/suinkim96</span></span>
+          </a>
+          <a class="crow" href="tel:+821026109650">
+            <span class="ic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/></svg>
+            </span>
+            <span><span class="lbl">Phone</span><br><span class="val">+82 10-2610-9650</span></span>
+          </a>
         </div>
       </div>
     </div>
   </section>
-  <footer>
-    <p>© 2026 Suin Kim</p>
-    <p>Hosted on GitHub Pages</p>
-  </footer>
-</div><!-- /page-awards -->
 
-<!-- ═══════════════ CONTACT PAGE ═══════════════ -->
-<div class="page" id="page-contact">
-  <section class="contact-section" style="min-height:100vh;display:flex;align-items:center;background:var(--surface);">
-    <div class="contact-inner" style="width:100%;">
-      <div class="section-label reveal" style="justify-content:center;">Contact</div>
-      <h2 class="reveal">Get in <em>touch.</em></h2>
-      <p class="reveal">Open to research collaborations, seminar invitations, and academic discussions.</p>
-      <a href="mailto:ksi2002@korea.ac.kr" class="contact-email reveal">ksi2002@korea.ac.kr</a>
-      <div class="social-links reveal">
-        <a href="https://github.com/suinkim96" target="_blank" class="social-link">GitHub ↗</a>
-      </div>
-    </div>
-  </section>
-  <footer>
-    <p>© 2026 Suin Kim</p>
-    <p>Hosted on GitHub Pages</p>
-  </footer>
-</div><!-- /page-contact -->
+</main>
+
+<footer>
+  <span>© 2026 Suin Kim</span>
+  <span>Seoul National University · Statistics</span>
+</footer>
 
 <script>
-  /* ── Cursor ── */
-  const dot = document.getElementById('dot'), ring = document.getElementById('ring');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  document.querySelectorAll('a,button,.research-card,.pub-item,.award-card').forEach(el=>{
-    el.addEventListener('mouseenter',()=>ring.classList.add('hovering'));
-    el.addEventListener('mouseleave',()=>ring.classList.remove('hovering'));
-  });
-  (function loop(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+/* ---------- Tab switching ---------- */
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+function show(id){
+  panels.forEach(p=>p.classList.toggle('active', p.id===id));
+  tabs.forEach(t=>t.setAttribute('aria-selected', String(t.dataset.tab===id)));
+  if(history.replaceState) history.replaceState(null,'', '#'+id);
+  window.scrollTo({top:0, behavior:'instant' in window ? 'instant':'auto'});
+  if(id==='home') runPlot();
+}
+tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(el=>{
+  el.addEventListener('click',e=>{e.preventDefault(); show(el.dataset.go);});
+});
+window.addEventListener('DOMContentLoaded',()=>{
+  const h=(location.hash||'#home').slice(1);
+  if(document.getElementById(h)) show(h);
+});
 
-  /* ── Nav scroll ── */
-  const navbar=document.getElementById('navbar');
-  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>50));
+/* ---------- Conformal prediction band plot ---------- */
+const svg = document.getElementById('plot');
+const NS='http://www.w3.org/2000/svg';
+const W=460,H=320, PAD={l:18,r:14,t:16,b:22};
+const x0=PAD.l, x1=W-PAD.r, y0=H-PAD.b, y1=PAD.t;
+function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 
-  /* ── Page routing ── */
-  function navigateTo(pageId) {
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+// mean curve + heteroscedastic scale (uncertainty grows with x)
+function mean(t){ return 0.5 + 0.30*Math.sin(t*3.0+0.4) - 0.12*t; } // 0..1 space
+function sig(t){ return 0.045 + 0.16*t; }                          // widening
+const sx=t=>x0+t*(x1-x0);
+const sy=v=>y0+(1-v)*(y1-y0);   // v in 0..1 -> pixel (note y1<y0)
 
-    const target = document.getElementById('page-'+pageId);
-    if (target) {
-      target.classList.add('active');
-      window.scrollTo(0,0);
-      // trigger reveals on newly shown page
-      observeReveals(target);
-    }
+let built=false;
+function buildPlot(){
+  if(built) return; built=true;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
 
-    const navLink = document.querySelector(`.nav-links a[data-page="${pageId}"]`);
-    if (navLink) navLink.classList.add('active');
+  // subtle horizontal gridlines
+  for(let i=0;i<=4;i++){
+    const yy=y1+(y0-y1)*i/4;
+    svg.appendChild(E('line',{x1:x0,x2:x1,y1:yy,y2:yy,stroke:'#14161C',
+      'stroke-opacity':0.06,'stroke-width':1}));
   }
+  // axis baseline
+  svg.appendChild(E('line',{x1:x0,x2:x1,y1:y0,y2:y0,stroke:'#14161C','stroke-opacity':0.18,'stroke-width':1}));
 
-  document.querySelectorAll('[data-page]').forEach(el=>{
-    el.addEventListener('click',e=>{
-      const page = el.dataset.page;
-      if (!el.href || el.href === '#' || el.getAttribute('href') === '#') {
-        e.preventDefault();
-        navigateTo(page);
-      } else if (!el.target) {
-        e.preventDefault();
-        navigateTo(page);
-      }
+  const N=64, ts=[];
+  for(let i=0;i<=N;i++) ts.push(i/N);
+
+  // bands: 95 (z=1.96), 80 (1.28), 50 (0.674)
+  const bands=[{z:1.96,op:0.09,cls:'b95'},{z:1.28,op:0.13,cls:'b80'},{z:0.674,op:0.20,cls:'b50'}];
+  bands.forEach(b=>{
+    let up='',lo='';
+    ts.forEach((t,i)=>{
+      const m=mean(t), s=sig(t)*b.z;
+      const xu=sx(t), yu=sy(Math.min(1,m+s)), yl=sy(Math.max(0,m-s));
+      up += (i? 'L':'M')+xu.toFixed(1)+' '+yu.toFixed(1)+' ';
+      lo = 'L'+xu.toFixed(1)+' '+yl.toFixed(1)+' '+lo;
     });
+    svg.appendChild(E('path',{d:up+lo+'Z', fill:`rgba(59,58,158,${b.op})`, class:'band '+b.cls}));
   });
 
-  /* ── Particle canvas ── */
-  const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
-  let W,H;const pts=[];
-  function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
-  resize();window.addEventListener('resize',resize);
-  const PAL=['#5eead4','#818cf8','#f472b6'];
-  class P{
-    constructor(){this.reset();}
-    reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.8+.3;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.c=PAL[Math.floor(Math.random()*3)];this.a=Math.random()*.5+.2;}
-    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}
-    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=this.c;ctx.globalAlpha=this.a;ctx.fill();}
-  }
-  for(let i=0;i<120;i++)pts.push(new P());
-  (function loop(){
-    ctx.clearRect(0,0,W,H);
-    pts.forEach(p=>{p.update();p.draw();});
-    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
-      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<90){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle='#5eead4';ctx.globalAlpha=(1-d/90)*.12;ctx.lineWidth=.5;ctx.stroke();}
-    }
-    ctx.globalAlpha=1;requestAnimationFrame(loop);
-  })();
+  // median line
+  let md='';
+  ts.forEach((t,i)=>{ md+=(i?'L':'M')+sx(t).toFixed(1)+' '+sy(mean(t)).toFixed(1)+' '; });
+  svg.appendChild(E('path',{d:md, fill:'none', stroke:'#3B3A9E','stroke-width':2.2,
+    'stroke-linecap':'round', class:'median'}));
 
-  /* ── Reveal observer (reusable) ── */
-  function observeReveals(root) {
-    const els = root ? root.querySelectorAll('.reveal:not(.visible)') : document.querySelectorAll('.reveal');
-    const ro = new IntersectionObserver(entries=>{
-      entries.forEach((e,i)=>{
-        if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);ro.unobserve(e.target);}
-      });
-    },{threshold:.1});
-    els.forEach(el=>ro.observe(el));
+  // scatter (heteroscedastic): deterministic pseudo-random for stable look
+  let seed=7;
+  const rnd=()=>{seed=(seed*9301+49297)%233280; return seed/233280;};
+  const randn=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};
+  for(let i=0;i<46;i++){
+    const t=rnd();
+    let v=mean(t)+sig(t)*randn()*1.05;
+    v=Math.max(0.02,Math.min(0.98,v));
+    const c=E('circle',{cx:sx(t).toFixed(1),cy:sy(v).toFixed(1),r:2.6,
+      fill:'#23225C','fill-opacity':0.55, class:'dot'});
+    c.style.animationDelay=(0.55+i*0.012)+'s';
+    svg.appendChild(c);
   }
-  observeReveals(null);
+}
+function runPlot(){
+  buildPlot();
+  svg.classList.remove('animate');
+  // reflow to restart animation
+  void svg.getBoundingClientRect();
+  requestAnimationFrame(()=>svg.classList.add('animate'));
+}
+buildPlot();
+runPlot();
 </script>
 </body>
 </html>
