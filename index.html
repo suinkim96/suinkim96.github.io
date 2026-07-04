@@ -218,6 +218,11 @@
   .pub .authors .me{color:var(--ink);font-weight:600;border-bottom:2px solid rgba(var(--accent-rgb),.35);}
   .pub .venue{font-size:13.5px;color:var(--ink);margin-top:6px;}
   .pub .venue em{font-style:italic;color:#33363F;}
+  .pub .doi{
+    font-family:var(--m);font-size:11px;color:var(--accent);text-decoration:none;
+    border-bottom:1px solid rgba(var(--accent-rgb),.3);margin-left:9px;white-space:nowrap;
+  }
+  .pub .doi:hover{color:var(--accent-deep);border-color:var(--accent);}
   .status{
     display:inline-block;font-family:var(--m);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
     padding:3px 9px;border-radius:100px;margin-left:2px;vertical-align:middle;
@@ -398,18 +403,32 @@
       </div>
       <h2 style="font-family:var(--d);font-weight:500;font-size:clamp(30px,5vw,46px);margin:-14px 0 44px;letter-spacing:-.02em;">Publications</h2>
 
-      <!-- Journal articles -->
+      <!-- Working papers (Under Review) -->
       <div class="pub-group">
-        <p class="group-label">Journal Articles</p>
+        <p class="group-label">Working Papers</p>
 
         <article class="pub">
           <div class="yr">2026</div>
           <div>
-            <h3 class="ttl">Optimal Selection of Parameter-Wise Shrinkage Parameters in Penalized Regression Models</h3>
-            <div class="authors">Wooyoung Shin, Nahee Kim, <span class="me">Suin Kim</span>, Yoonsuh Jung</div>
-            <div class="venue"><em>Stat</em> <span class="status toappear">To appear</span></div>
+            <h3 class="ttl">Conformalized composite quantile regression</h3>
+            <div class="authors"><span class="me">Suin Kim</span>, Yoonsuh Jung</div>
+            <div class="venue">Under review · <em>Machine Learning</em> <span class="status">Under review</span></div>
           </div>
         </article>
+
+        <article class="pub">
+          <div class="yr">2026</div>
+          <div>
+            <h3 class="ttl">Quantile-Blending for Stable Variable Selection in Quantile Regression</h3>
+            <div class="authors"><span class="me">Suin Kim</span>, Yoonsuh Jung</div>
+            <div class="venue">Under review · <em>Electronic Journal of Statistics</em> <span class="status">Under review</span></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Journal articles (To appear, then published) -->
+      <div class="pub-group">
+        <p class="group-label">Journal Articles</p>
 
         <article class="pub">
           <div class="yr">2026</div>
@@ -417,6 +436,15 @@
             <h3 class="ttl">Cross-Validation-Based Adaptive Shrinkage for Tree Ensemble Predictions</h3>
             <div class="authors">Wooyoung Shin, <span class="me">Suin Kim</span></div>
             <div class="venue"><em>The Korean Data &amp; Information Science Society</em> <span class="status toappear">To appear</span></div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2026</div>
+          <div>
+            <h3 class="ttl">Optimal Selection of Parameter-Wise Shrinkage Parameters in Penalized Regression Models</h3>
+            <div class="authors">Wooyoung Shin, Nahee Kim, <span class="me">Suin Kim</span>, Yoonsuh Jung</div>
+            <div class="venue"><em>Stat</em> 15, e70165<a class="doi" href="https://doi.org/10.1002/sta4.70165" target="_blank" rel="noopener">doi ↗</a></div>
           </div>
         </article>
 
@@ -489,29 +517,6 @@
             <h3 class="ttl">An educational needs analysis on TPACK competency of prospective professors</h3>
             <div class="authors">Seoyeon Jin, Miri Eom, <span class="me">Suin Kim</span>, Hyojung Kim</div>
             <div class="venue"><em>Journal of Educational Issues</em> 34.3, 53–74</div>
-          </div>
-        </article>
-      </div>
-
-      <!-- Working papers -->
-      <div class="pub-group">
-        <p class="group-label">Working Papers</p>
-
-        <article class="pub">
-          <div class="yr">2026</div>
-          <div>
-            <h3 class="ttl">Conformalized composite quantile regression</h3>
-            <div class="authors"><span class="me">Suin Kim</span>, Yoonsuh Jung</div>
-            <div class="venue">Under review · <em>Machine Learning</em> <span class="status">Under review</span></div>
-          </div>
-        </article>
-
-        <article class="pub">
-          <div class="yr">2026</div>
-          <div>
-            <h3 class="ttl">Quantile-Blending for Stable Variable Selection in Quantile Regression</h3>
-            <div class="authors"><span class="me">Suin Kim</span>, Yoonsuh Jung</div>
-            <div class="venue">Under review · <em>Electronic Journal of Statistics</em> <span class="status">Under review</span></div>
           </div>
         </article>
       </div>
